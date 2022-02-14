@@ -1,6 +1,7 @@
 .vscode/
 tokens/*
 test/
+build/
 *.pyc
 *.cpython
 *.pkg
