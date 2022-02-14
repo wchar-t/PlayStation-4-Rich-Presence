@@ -1,0 +1,9 @@
+.vscode/
+tokens/*
+test/
+*.pyc
+*.cpython
+*.pkg
+*.gp4
+*.bin
+*.map

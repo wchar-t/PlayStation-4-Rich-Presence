@@ -1,0 +1,4 @@
+Format: cusaXXXX, cusaYYYY, cusaZZZZ, asset, game_name
+
+cusa00419,942776426912972820,Grand Theft Auto V
+cusa03887,942776426002776145,Broforce
