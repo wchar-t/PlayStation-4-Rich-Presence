@@ -11,11 +11,11 @@ unsigned int get_host_ip() {
         .sin_port = sceNetHtons(4747)
     };
     struct sockaddr_in client_addr;
-
-	int server_sock;
+    
+    int server_sock;
     int client_sock;
 
-	server_sock = sceNetSocket("debug", AF_INET, SOCK_STREAM, 0);
+    server_sock = sceNetSocket("debug", AF_INET, SOCK_STREAM, 0);
 
     if(server_sock < 0) {
         sceSysUtilSendSystemNotificationWithText(222, "Can't boot TCP socket");
@@ -41,14 +41,14 @@ unsigned int get_host_ip() {
 
     unsigned int host_ip = client_addr.sin_addr.s_addr;
     char *buff = malloc(100);
-	char *ip = malloc(20);
+    char *ip = malloc(20);
 
-	sceNetInetNtop(AF_INET, &host_ip, ip, 20);
-	snprintf(buff, 100, "Connection from: %s", ip);
-	sceSysUtilSendSystemNotificationWithText(222, buff);
+    sceNetInetNtop(AF_INET, &host_ip, ip, 20);
+    snprintf(buff, 100, "Connection from: %s", ip);
+    sceSysUtilSendSystemNotificationWithText(222, buff);
 
-	free(buff);
-	free(buff);
+    free(buff);
+    free(buff);
 
-	return host_ip;
+    return host_ip;
 }
