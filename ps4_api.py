@@ -80,8 +80,13 @@ class PS4Api():
             await asyncio.sleep(1)
 
     async def set_activity(self, request):
-        self.playing["cusa"] = request.query.get("cusa", "")
-        self.playing["last_timestamp"] = int(datetime.now().timestamp())
+        # ideally we will receive all apps running, and here we parse
+        # it doesn't matter, as long as our cusa is in ?cusa=
+        if "cusa" in request.query.keys():
+            self.playing["cusa"] = request.query.get("cusa", "")
+            self.playing["last_timestamp"] = int(datetime.now().timestamp())
+            
+        return web.json_response({})
         
     async def run(self, loop):
         self.loop = loop

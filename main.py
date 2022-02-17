@@ -11,7 +11,7 @@ async def on_hello(ws, data):
     print("Hello, there :)")
 
 async def run(loop, token):
-    loop.create_task(gate.run(loop, token))
+    #loop.create_task(gate.run(loop, token))
     loop.create_task(api.run(loop))
 
     while True:
