@@ -66,7 +66,7 @@ unsigned int get_host_ip(char* buff_ip) {
 int request_get(char *ip, int port, char *path, char *buff, size_t buff_size) {
     struct in_addr ip_addr;
     struct sockaddr_in server_addr = {
-        .sin_port = sceNetHtons(4848),
+        .sin_port = sceNetHtons(port),
         .sin_family = AF_INET,
         .sin_addr = {
             .s_addr = IP(192, 168, 100, 50)
@@ -75,6 +75,7 @@ int request_get(char *ip, int port, char *path, char *buff, size_t buff_size) {
     sceNetInetPton(AF_INET, ip, &ip_addr);
     server_addr.sin_len = sizeof(server_addr);
     server_addr.sin_addr = ip_addr;
+    int success = 1;
     int sock = sceNetSocket("http", AF_INET, SOCK_STREAM, 0);
     char *request_payload = malloc(1024);
     char *host_ip = malloc(20);
@@ -89,17 +90,52 @@ int request_get(char *ip, int port, char *path, char *buff, size_t buff_size) {
 
     sceNetInetNtop(AF_INET, &ip, host_ip, 20);
     snprintf(request_payload, 1024,
-        "GET /set_activity HTTP/1.0\r\n"
+        "GET %s HTTP/1.0\r\n"
         "Host: %s:%d\r\n"
         "Accept: */*\r\n"
         "User-Agent: SimpleRequest (PlayStation 4)\r\n"
-        "\r\n"
-    );
+        "\r\n",
+    path, ip, port);
     
-    sceNetSend(sock, request_payload, 1024, 0);
+    if(sceNetSend(sock, request_payload, 1024, 0) < 0) {
+        success = -1;
+    }
 
     free(request_payload);
     free(host_ip);
+
+    return success;
 }
 
-// todo: request_loop_game(char *ip, int port)
+
+void dir(char *path, char *buffer, int buffer_size) {
+    int fd = sceKernelOpen(path, 0, 0);
+    int size = sceKernelGetdents(fd, buffer, buffer_size);
+    sceKernelClose(fd);
+}
+
+int send_sandbox(char *ip, int port) {
+    char buffer[8192];
+    char payload[8192];
+    int i = 0;
+    SceKernelDirent* entry;
+    
+
+    dir("/mnt/sandbox", &buffer, sizeof(buffer));
+    strcpy(payload, "/set_activity?mounted=");
+    entry = (SceKernelDirent*)buffer;
+
+    while(entry->d_fileno != 0 || i == 16) {
+        // limiting 16 dirs (arbitrary) to avoid endless loop
+        if(strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
+            strncat(payload, entry->d_name, sizeof(entry->d_name));
+            strncat(payload, "|", 1);
+        }
+
+        entry = (SceKernelDirent*)((char*)entry + entry->d_reclen);
+        i++;
+    }
+
+
+    return request_get("192.168.100.50", 4848, &payload, &buffer, 200);
+}

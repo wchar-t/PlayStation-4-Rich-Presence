@@ -82,11 +82,19 @@ class PS4Api():
     async def set_activity(self, request):
         # ideally we will receive all apps running, and here we parse
         # it doesn't matter, as long as our cusa is in ?cusa=
-        if "cusa" in request.query.keys():
-            self.playing["cusa"] = request.query.get("cusa", "")
-            self.playing["last_timestamp"] = int(datetime.now().timestamp())
-            
-        return web.json_response({})
+        url = str(request.url).lower()
+        
+        if not "mounted" in request.query.keys():
+            return web.json_response({"success": False})
+        
+        if not "cusa" in url:
+            return web.json_response({"success": False})
+        
+        mounted_dirs = request.query.get("mounted").lower().split("|")
+        self.playing["cusa"] = [x for x in mounted_dirs if x.find("cusa") >= 0][0].split("_")[0].lower()
+        self.playing["last_timestamp"] = int(datetime.now().timestamp())
+        
+        return web.json_response({"success": True})
         
     async def run(self, loop):
         self.loop = loop
