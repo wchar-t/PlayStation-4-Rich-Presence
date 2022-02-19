@@ -3,6 +3,8 @@ import aiohttp
 import copy
 import json
 
+APPLICATION_ID = 940876161955794945
+
 class Activity:
     """
     Activity
@@ -21,7 +23,7 @@ class Activity:
             "start": data.get("start", None),
             "end": data.get("end", None)
         }
-        self.application_id = data.get("application_id", 940876161955794945)
+        self.application_id = data.get("application_id", APPLICATION_ID)
         self.details = data.get("details", None)
         self.state = data.get("state", None)
         self.assets = {

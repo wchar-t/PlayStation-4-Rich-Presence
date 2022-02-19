@@ -3,6 +3,8 @@ from datetime import datetime
 from discord_gateway import DiscordGateway, Presence, Activity
 from aiohttp import web
 
+LOGO_KEY = "942818002963951667"
+
 class PS4Api():
     def __init__(self, discord_gate: DiscordGateway):
         self.web = web.Application()
@@ -21,7 +23,7 @@ class PS4Api():
         self.presence_placeholder = Presence([Activity({
             "name": "PS4",
             "state": "Idle",
-            "large_image": "942818002963951667",
+            "large_image": LOGO_KEY,
             "large_text": "PlayStation 4"
         })])
 
@@ -69,7 +71,7 @@ class PS4Api():
                     "name": cusa_data[1],
                     "large_image": cusa_data[0],
                     "large_text": cusa_data[1],
-                    "small_image": "942818002963951667",
+                    "small_image": LOGO_KEY,
                     "small_text": "Playing on PS4"
                 })])
 
