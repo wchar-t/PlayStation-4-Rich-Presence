@@ -1,3 +1,4 @@
+import asyncio
 import aiohttp
 import copy
 import json
@@ -11,8 +12,6 @@ class Activity:
     Some attributes of related classes are omitted, so, if you're interested in what you can do,
     take a look:
     https://discord.com/developers/docs/topics/gateway#activity-object
-
-    # TODO
     """
 
     def __init__(self, data):
@@ -41,13 +40,6 @@ class Presence:
     ## Description
     Class representing your presence, which includes 3 informations: afk, status and activities.
     Your activities are wrapped in here.
-
-    :class:`List<Activity>`activities:
-        The list of activities you are in. This project will only need one.
-    :class:`str`status:
-        Your status. It may be online, dnd, idle, invisible and offline.
-    :class:`bool`afk:
-        Away from keyboard state.
     """
 
     def __init__(self, activities, status="online", afk=False):
@@ -67,13 +59,12 @@ class DiscordGateway:
     Reference:
     https://discord.com/developers/docs/topics/gateway
     https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway
-
-    # TODO
     """
 
     def __init__(self):
         self.events = {}
         self.is_ready = False
+        self.heartbeat_interval = 30
 
     def event(self, coro):
         self.events[coro.__name__] = coro
@@ -89,7 +80,6 @@ class DiscordGateway:
         
         _presence = copy.deepcopy(presence).__dict__
         _presence["activities"] = [x.__dict__ for x in _presence["activities"]]
-        print(_presence)
 
         await self.ws.send_json({
             "op": 3,
@@ -112,8 +102,17 @@ class DiscordGateway:
         self.is_ready = True
         await self.dispatch("on_identify")
 
+    async def _send_heartbeat(self):
+        while True:
+            await asyncio.sleep(self.heartbeat_interval)
+            await self.ws.send_json({
+                "op": 1,
+                "d": None
+            })
+
     async def _on_hello(self, data):
-        # todo: data.heartbeat_interval
+        self.heartbeat_interval = data["heartbeat_interval"] / 1000
+        self.loop.create_task(self._send_heartbeat())
         await self.dispatch("on_hello", data)
         await self.identify()
 
@@ -127,9 +126,7 @@ class DiscordGateway:
             msg = await self.ws.receive()
 
             if msg.type == aiohttp.WSMsgType.TEXT:
-                # as all msgs are json
-                # todo: resume operation
-                # todo: hello ack op create_task
+                # as all msgs are json  
                 parsed_msg = json.loads(msg.data)
                 op = parsed_msg.get("op", None)
                 d = parsed_msg.get("d", {})

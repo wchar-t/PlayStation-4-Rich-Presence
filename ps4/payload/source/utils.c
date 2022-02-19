@@ -136,6 +136,5 @@ int send_sandbox(char *ip, int port) {
         i++;
     }
 
-
-    return request_get("192.168.100.50", 4848, &payload, &buffer, 200);
+    return request_get(ip, 4848, &payload, &buffer, 200);
 }

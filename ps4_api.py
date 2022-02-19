@@ -81,7 +81,7 @@ class PS4Api():
 
     async def set_activity(self, request):
         # ideally we will receive all apps running, and here we parse
-        # it doesn't matter, as long as our cusa is in ?cusa=
+        # it doesn't matter, as long as our cusa is in ?mounted=
         url = str(request.url).lower()
         
         if not "mounted" in request.query.keys():
