@@ -4,6 +4,10 @@ PS4RP is a Discord Rich Presence implementation for the PlayStation 4. It is com
 
 It can be ran on mobile, as it can run python, but i do not recommend
 
+![image](https://user-images.githubusercontent.com/8273763/154806780-0f65c39d-22e2-444c-af40-426d08d9b231.png)
+![image](https://user-images.githubusercontent.com/8273763/154806791-b0e70044-faf5-4c98-8962-ece7d06c0501.png)
+
+
 ## Compilation
 
 1. Setup the [libPS4](https://github.com/Scene-Collective/ps4-payload-sdk)
