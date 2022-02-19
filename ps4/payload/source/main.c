@@ -23,7 +23,7 @@ int _main() {
     }
     
     sceSysUtilSendSystemNotificationWithText(222, "Server closed. Exiting discord activities...");
-    //free(host_ip);
+    free(host_ip);
     
     return 0;
 }

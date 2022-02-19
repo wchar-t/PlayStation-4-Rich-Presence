@@ -17,7 +17,7 @@ def connect():
             sock.connect((PS4_IP, 4747))
             break
         except:
-            print("Couldn't connect. (1) Check PS4_IP. (2) Payload should be running")
+            print("Couldn't connect. (1) Check PS4_IP. (2) Payload should be running now")
 
 
 @gate.event
